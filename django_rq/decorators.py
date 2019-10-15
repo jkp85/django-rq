@@ -1,7 +1,10 @@
 from rq.decorators import job as _rq_job
 
 from django.conf import settings
-from django.utils import six
+try:
+    from django.utils.six import string_types
+except ImportError:
+    string_types = str
 
 from .queues import get_queue
 
@@ -24,7 +27,7 @@ def job(func_or_queue, connection=None, *args, **kwargs):
         func = None
         queue = func_or_queue
 
-    if isinstance(queue, six.string_types):
+    if isinstance(queue, string_types):
         try:
             queue = get_queue(queue)
             if connection is None:
